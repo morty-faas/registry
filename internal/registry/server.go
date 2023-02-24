@@ -12,6 +12,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/polyxia-org/morty-registry/internal/storage"
+	"github.com/polyxia-org/morty-registry/internal/storage/s3"
 	"github.com/polyxia-org/morty-registry/pkg/config"
 )
 
@@ -20,7 +22,8 @@ const (
 )
 
 type Server struct {
-	cfg *config.Config
+	cfg     *config.Config
+	storage storage.Storage
 }
 
 func NewServer() (*Server, error) {
@@ -28,7 +31,13 @@ func NewServer() (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Server{cfg}, nil
+
+	s3, err := s3.NewStorage(cfg.Storage.S3)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Server{cfg: cfg, storage: s3}, nil
 }
 
 func (s *Server) Serve() {
@@ -64,7 +73,7 @@ func (s *Server) Serve() {
 		stop()
 	}()
 
-	fmt.Printf("Server is listening on : %d\n", p)
+	log.Printf("Server is listening on : %d\n", p)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
@@ -77,7 +86,7 @@ func (s *Server) router() http.Handler {
 
 	r.Use(middleware.RequestID)
 
-	r.Post("/functions/create", s.UploadHandler)
+	r.Get("/v1/functions/{id}/upload-link", s.UploadHandler)
 	r.Get(healthEndpoint, s.HealthcheckHandler)
 
 	return r
