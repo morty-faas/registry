@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: Morty Function Registry - API Documentation
+  description: |-
+    This document aims to provide a simple and clear Morty Function Registry endpoints documentation.
+  version: 1.0.0
+externalDocs:
+  description: Morty Function Registry on Github.
+  url: https://github.com/polyxia-org/morty-registry
+tags:
+  - name: Functions
+    description: Functions API endpoints
+paths:
+  /v1/functions/{id}/upload-link:
+    get:
+      parameters: 
+        - name: id
+          in: path
+          description: The identifier of the function to upload.
+          required: true
+          schema:
+            type: string
+      tags:
+        - Functions
+      summary: Get an upload link to upload the function code into the underlying storage.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadLinkResponse'
+        '500':
+          description: An internal server error ocurred. Please check the logs of your registry for more details.
+components:
+  schemas:
+    UploadLinkResponse:
+      type: object
+      properties:
+        httpMethod:
+          type: string
+          example: "PUT"
+        uploadLink:
+          type: string
+
