@@ -3,9 +3,10 @@ package s3
 import (
 	"context"
 	"fmt"
-	"github.com/polyxia-org/morty-registry/internal/config"
 	"log"
 	"time"
+
+	"github.com/polyxia-org/morty-registry/internal/config"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
@@ -81,6 +82,19 @@ func (s *Storage) GetUploadLink(key string) (string, string, error) {
 	log.Printf("successfully generated pre-signed URL for key %s with a validity period of %f minutes\n", key, urlExpiresIn.Minutes())
 
 	return res.Method, res.URL, nil
+}
+
+func (s *Storage) DeleteObject(key string) error {
+	input := &s3.DeleteObjectInput{
+		Bucket: &s.bucketName,
+		Key:    &key,
+	}
+
+	if _, err := s.client.DeleteObject(s.ctx, input); err != nil {
+		return fmt.Errorf("failed to delete object %s from bucket %s", key, s.bucketName)
+	}
+
+	return nil
 }
 
 func (s *Storage) Healthcheck() error {

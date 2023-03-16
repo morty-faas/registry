@@ -3,13 +3,14 @@ package registry
 import (
 	"context"
 	"fmt"
-	"github.com/polyxia-org/morty-registry/internal/config"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/polyxia-org/morty-registry/internal/config"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -87,6 +88,7 @@ func (s *Server) router() http.Handler {
 	r.Use(middleware.RequestID)
 
 	r.Get("/v1/functions/{id}/upload-link", s.UploadHandler)
+	r.Delete("/v1/functions/{id}", s.DeleteHandler)
 	r.Get(healthEndpoint, s.HealthcheckHandler)
 
 	return r
