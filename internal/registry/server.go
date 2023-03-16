@@ -2,14 +2,17 @@ package registry
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"github.com/polyxia-org/morty-registry/internal/config"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/polyxia-org/morty-registry/internal/builder"
+	"github.com/polyxia-org/morty-registry/internal/config"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -21,10 +24,18 @@ const (
 	healthEndpoint = "/healthz"
 )
 
-type Server struct {
-	cfg     *config.Config
-	storage storage.Storage
-}
+type (
+	Server struct {
+		cfg     *config.Config
+		storage storage.Storage
+		builder *builder.Builder
+	}
+
+	APIError struct {
+		StatusCode int    `json:"status"`
+		Message    string `json:"message"`
+	}
+)
 
 func NewServer() (*Server, error) {
 	cfg, err := config.Load()
@@ -37,7 +48,18 @@ func NewServer() (*Server, error) {
 		return nil, err
 	}
 
-	return &Server{cfg: cfg, storage: s3}, nil
+	bld, err := builder.NewBuilder()
+	if err != nil {
+		return nil, err
+	}
+
+	server := &Server{
+		cfg:     cfg,
+		storage: s3,
+		builder: bld,
+	}
+
+	return server, nil
 }
 
 func (s *Server) Serve() {
@@ -86,8 +108,20 @@ func (s *Server) router() http.Handler {
 
 	r.Use(middleware.RequestID)
 
+	r.Post("/v1/functions/build", s.BuildHandler)
 	r.Get("/v1/functions/{id}/upload-link", s.UploadHandler)
 	r.Get(healthEndpoint, s.HealthcheckHandler)
 
 	return r
+}
+
+func (s *Server) JSONResponse(w http.ResponseWriter, status int, data any) {
+	w.WriteHeader(status)
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
+func (s *Server) APIErrorResponse(w http.ResponseWriter, err *APIError) {
+	log.Error(err.Message)
+	s.JSONResponse(w, err.StatusCode, err)
 }

@@ -6,15 +6,15 @@ import (
 
 type (
 	Config struct {
-		Port    int           `yaml:"port"`
-		Storage StorageConfig `yaml:"storage"`
+		Port    int     `yaml:"port"`
+		Storage Storage `yaml:"storage"`
 	}
 
-	StorageConfig struct {
-		S3 S3Config `yaml:"s3"`
+	Storage struct {
+		S3 S3 `yaml:"s3"`
 	}
 
-	S3Config struct {
+	S3 struct {
 		Bucket   string `yaml:"bucket"`
 		Region   string `yaml:"region"`
 		Endpoint string `yaml:"endpoint"`
@@ -37,8 +37,8 @@ var loaderOptions = &config.Options[Config]{
 	// Inject a default configuration in the loader
 	Default: &Config{
 		Port: 8080,
-		Storage: StorageConfig{
-			S3: S3Config{
+		Storage: Storage{
+			S3: S3{
 				Bucket:   "functions",
 				Region:   "eu-west-1",
 				Endpoint: "http://localhost:9000",
