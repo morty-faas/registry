@@ -3,9 +3,12 @@ package s3
 import (
 	"context"
 	"fmt"
-	"github.com/polyxia-org/morty-registry/internal/config"
-	"log"
+	"io"
 	"time"
+
+	"github.com/polyxia-org/morty-registry/internal/config"
+	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
@@ -26,7 +29,7 @@ type Storage struct {
 
 var _ storage.Storage = &Storage{}
 
-func NewStorage(c config.S3Config) (*Storage, error) {
+func NewStorage(c config.S3) (*Storage, error) {
 
 	log.Println("bootstrapping 's3' backend engine")
 	ctx := context.Background()
@@ -62,8 +65,20 @@ func NewStorage(c config.S3Config) (*Storage, error) {
 	}, nil
 }
 
-func (s *Storage) GetUploadLink(key string) (string, string, error) {
+func (s *Storage) PutFile(key string, body io.Reader) error {
+	logrus.Tracef("storage/s3: uploading file in bucket '%s' at key '%s'", s.bucketName, key)
 
+	opts := &s3.PutObjectInput{
+		Bucket: &s.bucketName,
+		Key:    aws.String(key),
+		Body:   body,
+	}
+
+	_, err := s.client.PutObject(s.ctx, opts)
+	return err
+}
+
+func (s *Storage) GetUploadLink(key string) (string, string, error) {
 	presignClient := s3.NewPresignClient(s.client)
 
 	res, err := presignClient.PresignPutObject(s.ctx, &s3.PutObjectInput{
