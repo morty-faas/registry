@@ -3,6 +3,7 @@ package s3
 import (
 	"context"
 	"fmt"
+	"github.com/polyxia-org/morty-registry/internal/config"
 	"log"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/polyxia-org/morty-registry/internal/storage"
-	"github.com/polyxia-org/morty-registry/pkg/config"
 )
 
 const (

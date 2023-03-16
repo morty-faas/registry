@@ -3,6 +3,7 @@ package registry
 import (
 	"context"
 	"fmt"
+	"github.com/polyxia-org/morty-registry/internal/config"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +15,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/polyxia-org/morty-registry/internal/storage"
 	"github.com/polyxia-org/morty-registry/internal/storage/s3"
-	"github.com/polyxia-org/morty-registry/pkg/config"
 )
 
 const (
@@ -27,7 +27,7 @@ type Server struct {
 }
 
 func NewServer() (*Server, error) {
-	cfg, err := config.Parse()
+	cfg, err := config.Load()
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (s *Server) Serve() {
 		stop()
 	}()
 
-	log.Printf("Server is listening on : %d\n", p)
+	log.Printf("function registry is listening on 0.0.0.0:%d\n", p)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
