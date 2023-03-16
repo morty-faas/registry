@@ -11,6 +11,23 @@ tags:
   - name: Functions
     description: Functions API endpoints
 paths:
+  /v1/functions/build:
+    post:
+      tags:
+        - Functions
+      summary: Build a function and push the image into the registry.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuildRequest'
+      responses:
+        '200':
+          description: The function build was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildResponse'
   /v1/functions/{id}/upload-link:
     get:
       parameters: 
@@ -34,6 +51,26 @@ paths:
           description: An internal server error ocurred. Please check the logs of your registry for more details.
 components:
   schemas:
+    BuildRequest:
+      type: object
+      properties:
+        runtime:
+          type: string
+          description: The name of the runtime to use.
+          example: python-3
+        name:
+          type: string
+          description: The name of the function.
+          example: my-python-func
+        code:
+          type: string
+          format: binary
+    BuildResponse:
+      type: object
+      properties:
+        imageUrl:
+          type: string
+          description: The URL of the function image.
     UploadLinkResponse:
       type: object
       properties:
