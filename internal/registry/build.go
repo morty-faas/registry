@@ -2,13 +2,11 @@ package registry
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/google/uuid"
 	"github.com/polyxia-org/morty-registry/internal/builder"
-	"github.com/polyxia-org/morty-registry/pkg/helpers"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -57,17 +55,8 @@ func (s *Server) BuildHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Compress the rootfs using the LZ4 compression algorithm.
-	// We use LZ4 because it is one of the faster compression algorithm.
-	// See: https://github.com/lz4/lz4#benchmarks
-	archive := fmt.Sprintf("%s.lz4", image)
-	if err := helpers.CompressLZ4(image, archive); err != nil {
-		s.APIErrorResponse(w, makeAPIError(http.StatusInternalServerError, err))
-		return
-	}
-
 	// Upload the file to the remote storage before returning a response to the user
-	f, _ = os.Open(archive)
+	f, _ = os.Open(image)
 	if err := s.storage.PutFile(functionName, f); err != nil {
 		s.APIErrorResponse(w, makeAPIError(http.StatusInternalServerError, err))
 		return
@@ -75,7 +64,7 @@ func (s *Server) BuildHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Infof("build/%s: function build successful", opts.Id)
 
-	w.WriteHeader(http.StatusNoContent)
+	s.JSONResponse(w, http.StatusOK, "/v1/functions/"+functionName)
 }
 
 func makeAPIError(status int, err error) *APIError {
