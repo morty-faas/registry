@@ -78,10 +78,10 @@ func (s *Storage) PutFile(key string, body io.Reader) error {
 	return err
 }
 
-func (s *Storage) GetUploadLink(key string) (string, string, error) {
+func (s *Storage) GetDownloadLink(key string) (string, string, error) {
 	presignClient := s3.NewPresignClient(s.client)
 
-	res, err := presignClient.PresignPutObject(s.ctx, &s3.PutObjectInput{
+	res, err := presignClient.PresignGetObject(s.ctx, &s3.GetObjectInput{
 		Bucket: aws.String(s.bucketName),
 		Key:    aws.String(key),
 	}, func(po *s3.PresignOptions) {

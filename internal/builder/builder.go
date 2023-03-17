@@ -16,8 +16,7 @@ import (
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 	dkarch "github.com/docker/docker/pkg/archive"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/hashicorp/go-getter"
 	cp "github.com/otiai10/copy"
 	"github.com/polyxia-org/morty-registry/pkg/archive"
 	"github.com/polyxia-org/morty-registry/pkg/helpers"
@@ -42,10 +41,10 @@ type (
 )
 
 const (
-	destination        = "/tmp/morty-runtimes"
-	runtimesRepository = "https://github.com/polyxia-org/morty-runtimes.git"
-	branch             = "main"
-	alphaInitScript    = `#!/bin/sh
+	destination     = "/tmp/morty-runtimes"
+	runtimeEndpoint = "github.com/polyxia-org/morty-runtimes.git"
+	branch          = "main"
+	alphaInitScript = `#!/bin/sh
 source /app/env.sh
 /usr/bin/alpha
 	`
@@ -53,7 +52,7 @@ source /app/env.sh
 
 var (
 	ErrFailedToInitializeDockerClient        = errors.New("failed to initialize docker client")
-	ErrFailedToCloneRuntimes                 = errors.New("unable to clone runtimes repository")
+	ErrFailedToDownloadRuntimes              = errors.New("unable to download runtimes repository")
 	ErrInvalidRuntime                        = errors.New("runtime is invalid")
 	ErrFailedToSaveArchiveToWorkingDirectory = errors.New("failed to save archive file to the current working directory")
 	ErrInjectingCodeIntoRuntime              = errors.New("the function code can't be injected into the given runtime")
@@ -115,7 +114,7 @@ func (b *Builder) ImageBuild(ctx context.Context, opts *BuildOptions) (string, e
 	// Decompress the given function code archive into the runtime template
 	// We can't continue the process if an errors occurs here because we
 	// need to inject the user provided code to be able to build the function.
-	if err := archive.Unzip(zipPath, workingDirectory); err != nil {
+	if err := archive.Unzip(zipPath, path.Join(workingDirectory, "function")); err != nil {
 		return "", helpers.WrapError(ErrInjectingCodeIntoRuntime, err)
 	}
 
@@ -280,7 +279,7 @@ func makeExt4FS(workingDirectory string, size int64) (string, string, error) {
 // downloadRuntimes will clone the runtime repository to the local disk.
 // It will be executed only once during the initialization of the builder.
 func downloadRuntimes() (string, error) {
-	log.Infof("downloading runtimes from %s into %s", runtimesRepository, destination)
+	log.Infof("downloading runtimes from %s into %s", runtimeEndpoint, destination)
 
 	if _, err := os.Stat(destination); !os.IsNotExist(err) {
 		log.Debugf("trying to remove %s as it is not empty", destination)
@@ -290,17 +289,8 @@ func downloadRuntimes() (string, error) {
 		}
 	}
 
-	opts := &git.CloneOptions{
-		URL:           runtimesRepository,
-		ReferenceName: plumbing.NewBranchReferenceName(branch),
-		// We don't want to clone all the branches, it is useless as we consider
-		// that main is already up-to-date
-		SingleBranch: true,
-	}
-
-	if _, err := git.PlainClone(destination, false, opts); err != nil {
-		log.Errorf("%s: %v", ErrFailedToCloneRuntimes.Error(), err)
-		return "", ErrFailedToCloneRuntimes
+	if err := getter.Get(destination, runtimeEndpoint); err != nil {
+		return "", helpers.WrapError(ErrFailedToDownloadRuntimes, err)
 	}
 
 	return path.Join(destination, "template"), nil

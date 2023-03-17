@@ -109,7 +109,7 @@ func (s *Server) router() http.Handler {
 	r.Use(middleware.RequestID)
 
 	r.Post("/v1/functions/build", s.BuildHandler)
-	r.Get("/v1/functions/{id}/upload-link", s.UploadHandler)
+	r.Get("/v1/functions/{id}", s.GetImageHandler)
 	r.Get(healthEndpoint, s.HealthcheckHandler)
 
 	return r

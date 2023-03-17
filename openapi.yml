@@ -20,17 +20,17 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/BuildRequest'
+              $ref: "#/components/schemas/BuildRequest"
       responses:
-        '200':
+        "200":
           description: The function build was successful.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BuildResponse'
-  /v1/functions/{id}/upload-link:
+                $ref: "#/components/schemas/BuildResponse"
+  /v1/functions/{id}:
     get:
-      parameters: 
+      parameters:
         - name: id
           in: path
           description: The identifier of the function to upload.
@@ -39,15 +39,16 @@ paths:
             type: string
       tags:
         - Functions
-      summary: Get an upload link to upload the function code into the underlying storage.
+      summary: Get a download link for the image of the given function
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadLinkResponse'
-        '500':
+                $ref: "#/components/schemas/DownloadLinkResponse"
+
+        "500":
           description: An internal server error ocurred. Please check the logs of your registry for more details.
 components:
   schemas:
@@ -62,21 +63,12 @@ components:
           type: string
           description: The name of the function.
           example: my-python-func
-        code:
+        archive:
           type: string
           format: binary
     BuildResponse:
-      type: object
-      properties:
-        imageUrl:
-          type: string
-          description: The URL of the function image.
-    UploadLinkResponse:
-      type: object
-      properties:
-        httpMethod:
-          type: string
-          example: "PUT"
-        uploadLink:
-          type: string
-
+      type: string
+      description: The URI to call on this server to retrieve a download link for this function image.
+    DownloadLinkResponse:
+      type: string
+      description: A presigned URL to download the function image
