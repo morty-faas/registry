@@ -24,3 +24,5 @@ go.work
 
 *.zip
 .DS_Store
+
+bin

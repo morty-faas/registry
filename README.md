@@ -20,5 +20,5 @@ export AWS_SECRET_ACCESS_KEY=mortymorty
 Run the project : 
 
 ```bash
-go run main.go
+make start
 ```
