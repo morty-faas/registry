@@ -36,7 +36,7 @@ var loaderOptions = &config.Options[Config]{
 
 	// Inject a default configuration in the loader
 	Default: &Config{
-		Port: 8080,
+		Port: 8081,
 		Storage: Storage{
 			S3: S3{
 				Bucket:   "functions",
