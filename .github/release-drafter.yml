@@ -1,26 +1,26 @@
 name-template: "v$RESOLVED_VERSION"
 tag-template: "v$RESOLVED_VERSION"
 template: |
-  ## What Changed 👀
+  ## What Changed
   $CHANGES
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
 categories:
-  - title: 🚀 Features
+  - title: Features
     labels:
       - "type: feat"
-  - title: 🐛 Fixes
+  - title: Fixes
     labels:
       - "type: fix"
-  - title: 📄 Documentation
+  - title: Documentation
     labels:
       - "type: docs"
-  - title: 🔄 CI
+  - title: CI
     labels:
       - "type: ci"
-  - title: 🧩 Dependency Updates
+  - title: Dependency Updates
     labels:
       - "type: build"
-  - title: 🔨 Refactor
+  - title: Refactor
     labels:
       - "type: refactor"
     collapse-after: 5
