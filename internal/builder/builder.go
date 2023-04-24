@@ -18,9 +18,9 @@ import (
 	dkarch "github.com/docker/docker/pkg/archive"
 	"github.com/hashicorp/go-getter"
 	cp "github.com/otiai10/copy"
-	"github.com/polyxia-org/morty-registry/pkg/archive"
-	"github.com/polyxia-org/morty-registry/pkg/helpers"
-	"github.com/polyxia-org/morty-registry/pkg/sys"
+	"github.com/morty-faas/registry/pkg/archive"
+	"github.com/morty-faas/registry/pkg/helpers"
+	"github.com/morty-faas/registry/pkg/sys"
 	log "github.com/sirupsen/logrus"
 )
 

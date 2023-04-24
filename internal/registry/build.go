@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/google/uuid"
-	"github.com/polyxia-org/morty-registry/internal/builder"
+	"github.com/morty-faas/registry/internal/builder"
 	log "github.com/sirupsen/logrus"
 )
 

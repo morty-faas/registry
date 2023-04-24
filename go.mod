@@ -1,4 +1,4 @@
-module github.com/polyxia-org/morty-registry
+module github.com/morty-faas/registry
 
 go 1.19
 

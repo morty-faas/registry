@@ -10,14 +10,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/polyxia-org/morty-registry/internal/builder"
-	"github.com/polyxia-org/morty-registry/internal/config"
+	"github.com/morty-faas/registry/internal/builder"
+	"github.com/morty-faas/registry/internal/config"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/polyxia-org/morty-registry/internal/storage"
-	"github.com/polyxia-org/morty-registry/internal/storage/s3"
+	"github.com/morty-faas/registry/internal/storage"
+	"github.com/morty-faas/registry/internal/storage/s3"
 )
 
 const (

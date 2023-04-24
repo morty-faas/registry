@@ -6,14 +6,14 @@ import (
 	"io"
 	"time"
 
-	"github.com/polyxia-org/morty-registry/internal/config"
+	"github.com/morty-faas/registry/internal/config"
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/polyxia-org/morty-registry/internal/storage"
+	"github.com/morty-faas/registry/internal/storage"
 )
 
 const (

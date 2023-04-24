@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/polyxia-org/morty-registry/internal/registry"
+	"github.com/morty-faas/registry/internal/registry"
 	log "github.com/sirupsen/logrus"
 )
 

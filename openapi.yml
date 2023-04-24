@@ -6,7 +6,7 @@ info:
   version: 1.0.0
 externalDocs:
   description: Morty Function Registry on Github.
-  url: https://github.com/polyxia-org/morty-registry
+  url: https://github.com/morty-faas/registry
 tags:
   - name: Functions
     description: Functions API endpoints
@@ -20,14 +20,14 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/BuildRequest"
+              $ref: '#/components/schemas/BuildRequest'
       responses:
-        "200":
+        '200':
           description: The function build was successful.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BuildResponse"
+                $ref: '#/components/schemas/BuildResponse'
   /v1/functions/{id}:
     get:
       parameters:
@@ -41,14 +41,14 @@ paths:
         - Functions
       summary: Get a download link for the image of the given function
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DownloadLinkResponse"
+                $ref: '#/components/schemas/DownloadLinkResponse'
 
-        "500":
+        '500':
           description: An internal server error ocurred. Please check the logs of your registry for more details.
 components:
   schemas:
