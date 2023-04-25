@@ -7,7 +7,7 @@ require (
 	github.com/docker/docker v23.0.1+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-getter v1.7.1
-	github.com/otiai10/copy v1.9.0
+	github.com/otiai10/copy v1.11.0
 	github.com/pierrec/lz4 v2.6.1+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/thomasgouveia/go-config v1.0.0
