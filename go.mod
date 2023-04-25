@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.15
-	github.com/docker/docker v23.0.1+incompatible
+	github.com/docker/docker v23.0.4+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-getter v1.7.1
 	github.com/otiai10/copy v1.11.0
