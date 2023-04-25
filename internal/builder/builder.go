@@ -17,10 +17,10 @@ import (
 	"github.com/docker/docker/client"
 	dkarch "github.com/docker/docker/pkg/archive"
 	"github.com/hashicorp/go-getter"
-	cp "github.com/otiai10/copy"
 	"github.com/morty-faas/registry/pkg/archive"
 	"github.com/morty-faas/registry/pkg/helpers"
 	"github.com/morty-faas/registry/pkg/sys"
+	cp "github.com/otiai10/copy"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -42,7 +42,7 @@ type (
 
 const (
 	destination     = "/tmp/morty-runtimes"
-	runtimeEndpoint = "github.com/polyxia-org/morty-runtimes.git"
+	runtimeEndpoint = "github.com/morty-faas/runtimes.git"
 	branch          = "main"
 	alphaInitScript = `#!/bin/sh
 source /app/env.sh
